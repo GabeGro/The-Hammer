@@ -8,7 +8,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         this.body.setCollideWorldBounds(true)
 
         this.direction = direction 
-        this.playerVelocity = 100    // in pixels
+        this.playerVelocity = 200    // in pixels
         this.dashCooldown = 300    // in ms
         this.hurtTimer = 250       // in ms
 
@@ -31,7 +31,7 @@ class IdleState extends State {
     }
 
     execute(scene, player) {
-        // use destructuring to make a local copy of the keyboard object
+        //local copy of the keyboard
         const { left, right, up, down, space, shift } = scene.keys
         const HKey = scene.keys.HKey
 

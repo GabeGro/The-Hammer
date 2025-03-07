@@ -6,7 +6,8 @@ class Menu extends Phaser.Scene {
     preload() {
         //load images
         this.load.path = './assets/'
-        this.load.image('background', 'TempBG.png')
+        this.load.image('levelOneBG', 'TempBG.png')
+        this.load.image('levelTwoBG', 'leveltwo-BG.png')
         this.load.spritesheet('player', 'player-sheetTemp.png', {
             frameWidth: 32,
             frameHeight: 32,
@@ -65,6 +66,6 @@ class Menu extends Phaser.Scene {
         })
 
         // proceed once loading completes
-        this.scene.start('playScene')
+        this.scene.start('levelOneScene')
     }
 }

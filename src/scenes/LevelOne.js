@@ -1,11 +1,11 @@
-class Play extends Phaser.Scene {
+class LevelOne extends Phaser.Scene {
     constructor() {
-        super("playScene")
+        super("levelOneScene")
     }
 
     create() {
         // add background image
-        this.background = this.add.image(0, 0, 'background').setOrigin(0)
+        this.background = this.add.image(0, 0, 'levelOneBG').setOrigin(0)
 
         //add players
         this.player1 = new Player(this, 200, 150, 'player', 0, 'right').setOrigin(1, 1).setScale(2)
@@ -18,6 +18,7 @@ class Play extends Phaser.Scene {
         // setup keyboard input
         this.keys = this.input.keyboard.createCursorKeys()
         this.keys.HKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.H)
+        this.enterKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER)
 
         // debug key listener (assigned to D key)
         this.input.keyboard.on('keydown-D', function() {
@@ -32,5 +33,11 @@ class Play extends Phaser.Scene {
     update() {
         // make sure we step (ie update) the hero's state machine
         this.playerFSM.step()
+
+        //temp scene change
+        if (Phaser.Input.Keyboard.JustDown(this.enterKey)) {
+            console.log('Pressed')
+            this.scene.start('levelTwoScene')
+        }
     }
 }
