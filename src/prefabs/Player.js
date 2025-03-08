@@ -9,24 +9,23 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
         this.direction = direction 
         this.playerVelocity = 200    // in pixels
-        this.dashCooldown = 300    // in ms
         this.hurtTimer = 250       // in ms
 
-        // initialize state machine managing player (initial state, possible states, state args[])
-        scene.playerFSM = new StateMachine('idle', {
-            idle: new IdleState(),
-            move: new MoveState(),
-            attack: new AttackState(),
-            block: new BlockState(),
-            hurt: new HurtState(),
-        }, [scene, this])   // pass these as arguments to maintain scene/object context in the FSM
+        // initialize state machine managing player
+        scene.playerFSM = new StateMachine('playerIdle', {
+            playerIdle: new PlayerIdleState(),
+            playerMove: new PlayerMoveState(),
+            playerAttack: new PlayerAttackState(),
+            playerBlock: new PlayerBlockState(),
+            playerHurt: new PlayerHurtState(),
+        }, [scene, this])
     }
 }
 
-class IdleState extends State {
+class PlayerIdleState extends State {
     enter (scene, player) {
         player.setVelocity(0)
-        player.anims.play(`walk-${player.direction}`)
+        player.anims.play(`playerWalk-${player.direction}`)
         player.anims.stop()
     }
 
@@ -37,57 +36,57 @@ class IdleState extends State {
 
         // transition to swing if pressing space
         if(Phaser.Input.Keyboard.JustDown(space)) {
-            this.stateMachine.transition('attack')
+            this.stateMachine.transition('playerAttack')
             return
         }
 
         // transition to dash if pressing shift
         if(Phaser.Input.Keyboard.JustDown(shift)) {
-            this.stateMachine.transition('block')
+            this.stateMachine.transition('playerBlock')
             return
         }
 
         // hurt if H key input (temp)
         if(Phaser.Input.Keyboard.JustDown(HKey)) {
-            this.stateMachine.transition('hurt')
+            this.stateMachine.transition('playerHurt')
             return
         }
 
         // transition to move if pressing a movement key
         if(left.isDown || right.isDown || up.isDown || down.isDown ) {
-            this.stateMachine.transition('move')
+            this.stateMachine.transition('playerMove')
             return
         }
     }
 }
 
-class MoveState extends State {
+class PlayerMoveState extends State {
     execute(scene, player) {
         // use destructuring to make a local copy of the keyboard object
         const { left, right, up, down, space, shift } = scene.keys
         const HKey = scene.keys.HKey
 
-        // transition to swing if pressing space
+        // transition to attack if pressing space
         if(space.isDown) {
-            this.stateMachine.transition('attack')
+            this.stateMachine.transition('playerAttack')
             return
         }
 
-        // transition to dash if pressing shift
+        // transition to block if pressing shift
         if(shift.isDown) {
-            this.stateMachine.transition('block')
+            this.stateMachine.transition('playerBlock')
             return
         }
 
         // hurt if H key input (just for demo purposes)
         if(Phaser.Input.Keyboard.JustDown(HKey)) {
-            this.stateMachine.transition('hurt')
+            this.stateMachine.transition('playerHurt')
             return
         }
 
         // transition to idle if not pressing movement keys
         if(!(left.isDown || right.isDown || up.isDown || down.isDown)) {
-            this.stateMachine.transition('idle')
+            this.stateMachine.transition('playerIdle')
             return
         }
 
@@ -108,43 +107,54 @@ class MoveState extends State {
         // normalize movement vector, update player position, and play proper animation
         moveDirection.normalize()
         player.setVelocity(player.playerVelocity * moveDirection.x, player.playerVelocity * moveDirection.y)
-        player.anims.play(`walk-${player.direction}`, true)
+        player.anims.play(`playerWalk-${player.direction}`, true)
+        if (!scene.playerWalking.isPlaying) {
+            scene.playerWalking.stop()
+            scene.playerWalking.play()
+        }
     }
 }
 
-class AttackState extends State {
+class PlayerAttackState extends State {
     execute(scene, player) {
         const { left, right, up, down, space, shift } = scene.keys
 
         player.setVelocity(0)
-        player.anims.play(`attack-${player.direction}`, true)
+        player.anims.play(`playerAttack-${player.direction}`, true)
+        
+        //play sfx
+        if (!scene.playerPunch.isPlaying) {
+            scene.playerPunch.stop()
+            scene.playerPunch.play()
+        }
+
         if(!(space.isDown)) { 
-            this.stateMachine.transition('idle')
+            this.stateMachine.transition('playerIdle')
             return
         }
     }
 }
 
-class BlockState extends State {
+class PlayerBlockState extends State {
     execute(scene, player) {
         const { left, right, up, down, space, shift } = scene.keys
 
         player.setVelocity(0)
-        player.anims.play(`block-${player.direction}`, true)
+        player.anims.play(`playerBlock-${player.direction}`, true)
 
         // set a short cooldown delay before going back to idle
         if (!(shift.isDown)) {
             player.clearTint()
-            this.stateMachine.transition('idle')
+            this.stateMachine.transition('playerIdle')
             return
         }
     }
 }
 
-class HurtState extends State {
+class PlayerHurtState extends State {
     enter(scene, player) {
         player.setVelocity(0)
-        player.anims.play(`walk-${player.direction}`)
+        player.anims.play(`playerWalk-${player.direction}`)
         player.anims.stop()
         player.setTint(0xFF0000)     // turn red
         // create knockback by sending body in direction opposite facing direction
@@ -160,7 +170,7 @@ class HurtState extends State {
         // set recovery timer
         scene.time.delayedCall(player.hurtTimer, () => {
             player.clearTint()
-            this.stateMachine.transition('idle')
+            this.stateMachine.transition('playerIdle')
         })
     }
 }
