@@ -12,8 +12,8 @@ class LevelOne extends Phaser.Scene {
         this.playerWalking = this.sound.add('player-walking')
 
         //add players
-        this.thug1 = new Enemy(this, 500, 200, 'thug', 0, 'right').setScale(2.1).setOrigin(1, 1).setSize(30, 20)
-        this.player1 = new Player(this, 75, 200, 'player', 0, 'right').setOrigin(1, 1).setScale(2) 
+        this.player1 = new Player(this, 75, 200, 'player', 0, 'right').setOrigin(1, 1).setScale(2)
+        this.thug1 = new Enemy(this, 500, 200, 'thug', 0, 'right', this.player1).setScale(2.1).setOrigin(1, 1).setSize(30, 20)
 
         // set up camera
         this.cameras.main.setBounds(0, 0, this.background.width, this.background.height)
@@ -36,8 +36,9 @@ class LevelOne extends Phaser.Scene {
     }
 
     update() {
-        // make sure we step (ie update) the hero's state machine
+        //update fsm's
         this.playerFSM.step()
+        this.enemyFSM.step()
 
         //temp scene change
         if (Phaser.Input.Keyboard.JustDown(this.enterKey)) {

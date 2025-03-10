@@ -36,5 +36,6 @@ class LevelTwo extends Phaser.Scene {
 
     update() {
         this.playerFSM.step()
+        this.enemyFSM.step()
     }
 }
