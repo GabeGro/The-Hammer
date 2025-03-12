@@ -6,6 +6,7 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
 
         this.body.setSize(this.width / 2, this.height / 2)
         this.body.setCollideWorldBounds(true)
+        this.body.setImmovable(true)
 
         this.direction = direction 
         this.enemyVelocity = 75    // in pixels
@@ -52,7 +53,7 @@ class MoveState extends State {
         enemy.setVelocity(direction.x * enemy.enemyVelocity, direction.y * enemy.enemyVelocity)
         enemy.anims.play(`walk-${enemy.direction}`, true)
 
-        if (Phaser.Math.Distance.Between(enemy.x, enemy.y, player.x, player.y) < 50) {
+        if (scene.thugHit) {
             this.stateMachine.transition('attack')
         }
     }
@@ -60,7 +61,16 @@ class MoveState extends State {
 
 class AttackState extends State {
     enter(scene, enemy) {
-        this.stateMachine.transition('idle')
+        enemy.setVelocity(0)
+        enemy.anims.play(`attack-${enemy.direction}`)
+
+        scene.time.delayedCall(2000, () => {
+            enemy.anims.play(`walk-${enemy.direction}`)
+            enemy.anims.stop()
+            scene.time.delayedCall(2000, () => {
+                this.stateMachine.transition('idle')
+            })
+        })
     }
 }
 
@@ -71,14 +81,14 @@ class HurtState extends State {
         enemy.anims.stop()
         enemy.setTint(0xFF0000)     // turn red
         // create knockback by sending body in direction opposite facing direction
-        switch(enemy.direction) {
+        /*switch(enemy.direction) {
             case 'left':
                 enemy.setVelocityX(enemy.enemyVelocity)
                 break
             case 'right':
                 enemy.setVelocityX(-enemy.enemyVelocity)
                 break
-        }
+        }*/
 
         // set recovery timer
         scene.time.delayedCall(enemy.hurtTimer, () => {

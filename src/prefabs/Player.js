@@ -6,10 +6,11 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
         this.body.setSize(this.width / 2, this.height / 2)
         this.body.setCollideWorldBounds(true)
+        this.body.setImmovable(true)
 
         this.direction = direction 
         this.playerVelocity = 200    // in pixels
-        this.hurtTimer = 250       // in ms
+        this.hurtTimer = 5000       // in ms
 
         // initialize state machine managing player
         scene.playerFSM = new StateMachine('playerIdle', {
@@ -40,14 +41,12 @@ class PlayerIdleState extends State {
             return
         }
 
-        // transition to dash if pressing shift
         if(Phaser.Input.Keyboard.JustDown(shift)) {
             this.stateMachine.transition('playerBlock')
             return
         }
 
-        // hurt if H key input (temp)
-        if(Phaser.Input.Keyboard.JustDown(HKey)) {
+        if(scene.thugHit) {
             this.stateMachine.transition('playerHurt')
             return
         }
@@ -78,8 +77,7 @@ class PlayerMoveState extends State {
             return
         }
 
-        // hurt if H key input (just for demo purposes)
-        if(Phaser.Input.Keyboard.JustDown(HKey)) {
+        if(scene.thugHit) {
             this.stateMachine.transition('playerHurt')
             return
         }
@@ -132,6 +130,11 @@ class PlayerAttackState extends State {
             this.stateMachine.transition('playerIdle')
             return
         }
+
+        if(scene.thugHit) {
+            this.stateMachine.transition('playerIdle')
+            return
+        }
     }
 }
 
@@ -157,7 +160,7 @@ class PlayerHurtState extends State {
         player.anims.play(`playerWalk-${player.direction}`)
         player.anims.stop()
         player.setTint(0xFF0000)     // turn red
-        // create knockback by sending body in direction opposite facing direction
+
         switch(player.direction) {
             case 'left':
                 player.setVelocityX(player.playerVelocity)
@@ -168,8 +171,9 @@ class PlayerHurtState extends State {
         }
 
         // set recovery timer
-        scene.time.delayedCall(player.hurtTimer, () => {
+        scene.time.delayedCall(250, () => {
             player.clearTint()
+            scene.thugHit = false
             this.stateMachine.transition('playerIdle')
         })
     }

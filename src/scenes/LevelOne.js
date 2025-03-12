@@ -15,6 +15,14 @@ class LevelOne extends Phaser.Scene {
         this.player1 = new Player(this, 75, 200, 'player', 0, 'right').setOrigin(1, 1).setScale(2)
         this.thug1 = new Enemy(this, 500, 200, 'thug', 0, 'right', this.player1).setScale(2.1).setOrigin(1, 1).setSize(30, 20)
 
+        //damage flags
+        this.thugHit = false
+
+        //add colliders
+        this.physics.add.collider(this.player1, this.thug1, (player, thug) => {
+            this.thugHit = true
+        })
+
         // set up camera
         this.cameras.main.setBounds(0, 0, this.background.width, this.background.height)
         this.cameras.main.startFollow(this.player1, false, 0.5, 0.5)
