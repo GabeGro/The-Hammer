@@ -18,15 +18,23 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
             move: new MoveState(),
             attack: new AttackState(),
             hurt: new HurtState(),
+            thugStun: new ThugStunState(),
         }, [scene, this])
+    }
+
+    update() {
+        console.log('hurt')
     }
 }
 
 class IdleState extends State {
     enter(scene, enemy) {
+        console.log('idle')
         enemy.setVelocity(0)
         enemy.anims.play(`walk-${enemy.direction}`)
         enemy.anims.stop()
+        enemy.setSize(20, 20)
+        scene.playerHit = false
     }
 
     execute(scene, enemy) {
@@ -40,6 +48,10 @@ class IdleState extends State {
 }
 
 class MoveState extends State {
+    enter(scene, enemy) {
+        console.log('move')
+    }
+    
     execute(scene, enemy) {
         const player = scene.player1
         const direction = new Phaser.Math.Vector2(player.x - enemy.x, player.y - enemy.y).normalize()
@@ -53,7 +65,7 @@ class MoveState extends State {
         enemy.setVelocity(direction.x * enemy.enemyVelocity, direction.y * enemy.enemyVelocity)
         enemy.anims.play(`walk-${enemy.direction}`, true)
 
-        if (scene.thugHit) {
+        if (Phaser.Math.Distance.Between(enemy.x, enemy.y, player.x, player.y) < 50) {
             this.stateMachine.transition('attack')
         }
     }
@@ -61,15 +73,14 @@ class MoveState extends State {
 
 class AttackState extends State {
     enter(scene, enemy) {
+        console.log('attack')
         enemy.setVelocity(0)
         enemy.anims.play(`attack-${enemy.direction}`)
+        enemy.setSize(35, 20)
 
         scene.time.delayedCall(2000, () => {
-            enemy.anims.play(`walk-${enemy.direction}`)
-            enemy.anims.stop()
-            scene.time.delayedCall(2000, () => {
-                this.stateMachine.transition('idle')
-            })
+            this.stateMachine.transition('thugStun')
+            return
         })
     }
 }
@@ -79,21 +90,55 @@ class HurtState extends State {
         enemy.setVelocity(0)
         enemy.anims.play(`walk-${enemy.direction}`)
         enemy.anims.stop()
-        enemy.setTint(0xFF0000)     // turn red
-        // create knockback by sending body in direction opposite facing direction
-        /*switch(enemy.direction) {
-            case 'left':
-                enemy.setVelocityX(enemy.enemyVelocity)
-                break
-            case 'right':
-                enemy.setVelocityX(-enemy.enemyVelocity)
-                break
-        }*/
+        scene.playerHit = false
 
         // set recovery timer
-        scene.time.delayedCall(enemy.hurtTimer, () => {
+        scene.time.delayedCall(1000, () => {
             enemy.clearTint()
             this.stateMachine.transition('idle')
+            return
         })
+    }
+
+    execute(scene, enemy) {
+        if(scene.playerHit) {
+            enemy.setTint(0xFF0000)
+            /*switch(enemy.direction) {
+                case 'left':
+                    enemy.setVelocityX(enemy.enemyVelocity)
+                    break
+                case 'right':
+                    enemy.setVelocityX(-enemy.enemyVelocity)
+                    break
+            }*/
+        }
+        scene.time.delayedCall(200, () => {
+            enemy.clearTint()
+            enemy.setVelocity(0)
+        })
+    }
+}
+
+class ThugStunState extends State {
+    enter(scene, enemy) {
+        console.log('stun')
+        console.log(`${scene.playerHit}`)
+        enemy.anims.play(`walk-${enemy.direction}`)
+        enemy.anims.stop()
+        enemy.setSize(20, 20)
+
+        scene.time.delayedCall(2000, () => {
+            if (this.stateMachine.state == 'thugStun') {
+                this.stateMachine.transition('idle')
+                return
+            }
+        })
+    }
+
+    execute(scene, enemy) {
+        if (scene.playerHit) {
+            this.stateMachine.transition('hurt')
+            return
+        }
     }
 }

@@ -21,6 +21,10 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             playerHurt: new PlayerHurtState(),
         }, [scene, this])
     }
+
+    update() {
+        
+    }
 }
 
 class PlayerIdleState extends State {
@@ -28,6 +32,7 @@ class PlayerIdleState extends State {
         player.setVelocity(0)
         player.anims.play(`playerWalk-${player.direction}`)
         player.anims.stop()
+        player.setSize(20, 20)
     }
 
     execute(scene, player) {
@@ -119,6 +124,7 @@ class PlayerAttackState extends State {
 
         player.setVelocity(0)
         player.anims.play(`playerAttack-${player.direction}`, true)
+        player.setSize(35, 20)
         
         //play sfx
         if (!scene.playerPunch.isPlaying) {
@@ -126,12 +132,10 @@ class PlayerAttackState extends State {
             scene.playerPunch.play()
         }
 
-        if(!(space.isDown)) { 
-            this.stateMachine.transition('playerIdle')
-            return
-        }
-
         if(scene.thugHit) {
+            this.stateMachine.transition('playerHurt')
+            return
+        } else if(!(space.isDown)) { 
             this.stateMachine.transition('playerIdle')
             return
         }
@@ -148,6 +152,7 @@ class PlayerBlockState extends State {
         // set a short cooldown delay before going back to idle
         if (!(shift.isDown)) {
             player.clearTint()
+            scene.thugHit = false
             this.stateMachine.transition('playerIdle')
             return
         }
@@ -175,6 +180,7 @@ class PlayerHurtState extends State {
             player.clearTint()
             scene.thugHit = false
             this.stateMachine.transition('playerIdle')
+            return
         })
     }
 }

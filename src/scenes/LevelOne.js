@@ -12,15 +12,22 @@ class LevelOne extends Phaser.Scene {
         this.playerWalking = this.sound.add('player-walking')
 
         //add players
-        this.player1 = new Player(this, 75, 200, 'player', 0, 'right').setOrigin(1, 1).setScale(2)
-        this.thug1 = new Enemy(this, 500, 200, 'thug', 0, 'right', this.player1).setScale(2.1).setOrigin(1, 1).setSize(30, 20)
+        this.player1 = new Player(this, 75, 200, 'player', 0, 'right').setOrigin(1, 1).setScale(2).setSize(20, 20)
+        this.thug1 = new Enemy(this, 500, 200, 'thug', 0, 'right', this.player1).setScale(2.1).setOrigin(1, 1).setSize(20, 20)
 
         //damage flags
         this.thugHit = false
+        this.playerHit = false
 
         //add colliders
         this.physics.add.collider(this.player1, this.thug1, (player, thug) => {
-            this.thugHit = true
+            if (this.playerFSM.state == 'playerAttack') {
+                this.playerHit = true
+            }
+            if (this.enemyFSM.state == 'attack') {
+                this.thugHit = true
+                //console.log(`thughit: ${this.thugHit}`)
+            }
         })
 
         // set up camera
@@ -30,7 +37,6 @@ class LevelOne extends Phaser.Scene {
 
         // setup keyboard input
         this.keys = this.input.keyboard.createCursorKeys()
-        this.keys.HKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.H)
         this.enterKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER)
 
         // debug key listener (assigned to D key)
@@ -47,6 +53,15 @@ class LevelOne extends Phaser.Scene {
         //update fsm's
         this.playerFSM.step()
         this.enemyFSM.step()
+
+        //update health
+        /*if (this.playerHit) {
+            this.thug1.update()
+            this.playerHit = false
+        }
+        if (this.thugHit) {
+            this.player1.update()
+        }*/
 
         //temp scene change
         if (Phaser.Input.Keyboard.JustDown(this.enterKey)) {
