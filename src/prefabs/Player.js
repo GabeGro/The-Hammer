@@ -61,7 +61,7 @@ class PlayerIdleState extends State {
             return
         }
 
-        if(scene.thugHit) {
+        if(scene.thugHit || scene.hammerHit) {
             this.stateMachine.transition('playerHurt')
             return
         }
@@ -97,7 +97,7 @@ class PlayerMoveState extends State {
             return
         }
 
-        if(scene.thugHit) {
+        if(scene.thugHit || scene.hammerHit) {
             this.stateMachine.transition('playerHurt')
             return
         }
@@ -147,7 +147,7 @@ class PlayerAttackState extends State {
             scene.playerPunch.play()
         }
 
-        if(scene.thugHit) {
+        if(scene.thugHit || scene.hammerHit) {
             this.stateMachine.transition('playerHurt')
             return
         } else if(!(space.isDown)) { 
@@ -194,6 +194,7 @@ class PlayerHurtState extends State {
         scene.time.delayedCall(250, () => {
             player.clearTint()
             scene.thugHit = false
+            scene.hammerHit = false
             this.stateMachine.transition('playerIdle')
             return
         })

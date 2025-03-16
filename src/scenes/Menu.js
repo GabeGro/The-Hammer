@@ -19,6 +19,10 @@ class Menu extends Phaser.Scene {
             frameWidth: 32,
             frameHeight: 32,
         })
+        this.load.spritesheet('hammer', 'hammer-sheet.png', {
+            frameWidth: 32,
+            frameHeight: 32,
+        })
 
         //load sfx and music
         this.load.audio('player-punch', 'player-punch.mp3')
@@ -51,6 +55,18 @@ class Menu extends Phaser.Scene {
             repeat: -1,
             frames: this.anims.generateFrameNumbers('thug', { start: 5, end: 8 }),
         })
+        this.anims.create({
+            key: 'hammerWalk-right',
+            frameRate: 8,
+            repeat: -1,
+            frames: this.anims.generateFrameNumbers('hammer', { start: 1, end: 4 }),
+        })
+        this.anims.create({
+            key: 'hammerWalk-left',
+            frameRate: 8,
+            repeat: -1,
+            frames: this.anims.generateFrameNumbers('hammer', { start: 5, end: 8 }),
+        })
 
         //block animation
         this.anims.create({
@@ -64,6 +80,18 @@ class Menu extends Phaser.Scene {
             frameRate: 8,
             repeat: -1,
             frames: this.anims.generateFrameNumbers('player', { start: 13, end: 13 }),
+        })
+        this.anims.create({
+            key: 'hammerBlock-right',
+            frameRate: 8,
+            repeat: -1,
+            frames: this.anims.generateFrameNumbers('hammer', { start: 14, end: 14 }),
+        })
+        this.anims.create({
+            key: 'hammerBlock-left',
+            frameRate: 8,
+            repeat: -1,
+            frames: this.anims.generateFrameNumbers('hammer', { start: 13, end: 13 }),
         })
 
         //attack animations
@@ -90,6 +118,18 @@ class Menu extends Phaser.Scene {
             frameRate: 4,
             repeat: -1,
             frames: this.anims.generateFrameNumbers('thug', { start: 11, end: 12 }),
+        })
+        this.anims.create({
+            key: 'hammerAttack-right',
+            frameRate: 4,
+            repeat: -1,
+            frames: this.anims.generateFrameNumbers('hammer', { start: 9, end: 10 }),
+        })
+        this.anims.create({
+            key: 'hammerAttack-left',
+            frameRate: 4,
+            repeat: -1,
+            frames: this.anims.generateFrameNumbers('hammer', { start: 11, end: 12 }),
         })
 
         // proceed once loading completes

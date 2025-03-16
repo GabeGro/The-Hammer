@@ -13,7 +13,8 @@ class LevelOne extends Phaser.Scene {
 
         //add players & enemies
         this.player1 = new Player(this, 75, 200, 'player', 0, 'right').setOrigin(1, 1).setScale(2).setSize(20, 20)
-        this.thug1 = new Thug(this, 500, 200, 'thug', 0, 'right', this.player1).setScale(2.1).setOrigin(1, 1).setSize(20, 20)
+        this.thug1 = new Thug(this, 500, 200, 'thug', 0, 'right').setScale(2.1).setOrigin(1, 1).setSize(20, 20)
+        this.hammer = new Hammer(this, 700, 200, 'hammer', 0, 'right').setScale(3).setOrigin(1, 1).setSize(20, 20)
 
         //add chairs
         this.chair1 = this.physics.add.sprite(200, 200, 'chair').setScale(3).setSize(10, 10)
@@ -22,6 +23,7 @@ class LevelOne extends Phaser.Scene {
         //damage flags
         this.thugHit = false
         this.playerHit = false
+        this.hammerHit = false
 
         //add colliders
         this.physics.add.collider(this.player1, this.thug1, (player, thug) => {
@@ -33,6 +35,15 @@ class LevelOne extends Phaser.Scene {
                 //console.log(`thughit: ${this.thugHit}`)
             }
         })
+        this.physics.add.collider(this.player1, this.hammer, (player, hammer) => {
+            if (this.playerFSM.state == 'playerAttack' && this.hammerFSM.state == 'hammerStun') {
+                this.playerHit = true
+            }
+            if (this.hammerFSM.state == 'hammerAttack') {
+                this.hammerHit = true
+                //console.log(`thughit: ${this.thugHit}`)
+            }
+        })
         this.physics.add.collider(this.player1, this.chair1, (player, chair) => {
             if (Phaser.Input.Keyboard.JustDown(this.keys.EKey)) {
                 this.player1.playerChair = true
@@ -40,6 +51,11 @@ class LevelOne extends Phaser.Scene {
         })
         this.physics.add.collider(this.thug1, this.chair1, (thug, chair) => {
             if (this.playerFSM.state == 'playerChair' && this.thugFSM.state == 'thugStun') {
+                this.playerHit = true
+            }
+        })
+        this.physics.add.collider(this.hammer, this.chair1, (hammer, chair) => {
+            if (this.playerFSM.state == 'playerChair' && this.hammerFSM.state == 'hammerStun') {
                 this.playerHit = true
             }
         })
@@ -73,11 +89,18 @@ class LevelOne extends Phaser.Scene {
         if (this.thug1 && this.thug1.active) {
             this.thugFSM.step() 
         }
+        if (this.hammer && this.hammer.active) {
+            this.hammerFSM.step() 
+        }
 
         //update health
         if (this.thug1 && this.thug1.health <= 0) {
             this.thug1.destroy()
             this.thug1 = null
+        }
+        if (this.hammer && this.hammer.health <= 0) {
+            this.hammer.destroy()
+            this.hammer = null
         }
 
         //temp scene change
