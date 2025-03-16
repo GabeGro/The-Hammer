@@ -11,6 +11,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         this.direction = direction 
         this.playerVelocity = 200    // in pixels
         this.hurtTimer = 5000       // in ms
+        this.playerChair = false
 
         // initialize state machine managing player
         scene.playerFSM = new StateMachine('playerIdle', {
@@ -19,11 +20,15 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             playerAttack: new PlayerAttackState(),
             playerBlock: new PlayerBlockState(),
             playerHurt: new PlayerHurtState(),
+            playerChair: new PlayerChairState(),
         }, [scene, this])
     }
 
-    update() {
-        
+    update(scene) {
+        if(this.playerChair) {
+            scene.chair1.x = this.x - 32.5
+            scene.chair1.y = this.y - 65
+        }
     }
 }
 
@@ -38,15 +43,20 @@ class PlayerIdleState extends State {
     execute(scene, player) {
         //local copy of the keyboard
         const { left, right, up, down, space, shift } = scene.keys
-        const HKey = scene.keys.HKey
+        const EKey = scene.keys.EKey
 
+        if(space.isDown && player.playerChair) {
+            this.stateMachine.transition('playerChair')
+            return
+        }
+        
         // transition to swing if pressing space
-        if(Phaser.Input.Keyboard.JustDown(space)) {
+        if(space.isDown) {
             this.stateMachine.transition('playerAttack')
             return
         }
 
-        if(Phaser.Input.Keyboard.JustDown(shift)) {
+        if(shift.isDown && !player.playerChair) {
             this.stateMachine.transition('playerBlock')
             return
         }
@@ -68,8 +78,13 @@ class PlayerMoveState extends State {
     execute(scene, player) {
         // use destructuring to make a local copy of the keyboard object
         const { left, right, up, down, space, shift } = scene.keys
-        const HKey = scene.keys.HKey
+        const EKey = scene.keys.EKey
 
+        if(space.isDown && player.playerChair) {
+            this.stateMachine.transition('playerChair')
+            return
+        }
+        
         // transition to attack if pressing space
         if(space.isDown) {
             this.stateMachine.transition('playerAttack')
@@ -77,7 +92,7 @@ class PlayerMoveState extends State {
         }
 
         // transition to block if pressing shift
-        if(shift.isDown) {
+        if(shift.isDown && !player.playerChair) {
             this.stateMachine.transition('playerBlock')
             return
         }
@@ -125,8 +140,8 @@ class PlayerAttackState extends State {
         player.setVelocity(0)
         player.anims.play(`playerAttack-${player.direction}`, true)
         player.setSize(35, 20)
-        
-        //play sfx
+            
+            //play sfx
         if (!scene.playerPunch.isPlaying) {
             scene.playerPunch.stop()
             scene.playerPunch.play()
@@ -179,6 +194,31 @@ class PlayerHurtState extends State {
         scene.time.delayedCall(250, () => {
             player.clearTint()
             scene.thugHit = false
+            this.stateMachine.transition('playerIdle')
+            return
+        })
+    }
+}
+
+class PlayerChairState extends State {
+    enter(scene, player) {
+        console.log('chair')
+
+        player.setVelocity(0)
+        player.playerChair = false
+        switch(player.direction) {
+            case 'left':
+                scene.chair1.x -= 30
+                scene.chair1.y += 30
+                break
+            case 'right':
+                scene.chair1.x += 30
+                scene.chair1.y += 30
+                break
+        }
+
+        scene.time.delayedCall(200, () => {
+            scene.chair1.destroy()
             this.stateMachine.transition('playerIdle')
             return
         })

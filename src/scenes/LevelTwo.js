@@ -22,7 +22,7 @@ class LevelTwo extends Phaser.Scene {
 
         // setup keyboard input
         this.keys = this.input.keyboard.createCursorKeys()
-        this.keys.HKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.H)
+        this.keys.EKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E)
 
         // debug key listener (assigned to D key)
         this.input.keyboard.on('keydown-D', function() {
@@ -35,7 +35,11 @@ class LevelTwo extends Phaser.Scene {
     }
 
     update() {
-        this.playerFSM.step()
-        this.enemyFSM.step()
+        if (this.player1 && this.player1.active) {
+            this.playerFSM.step() 
+        }
+        if (this.thug1 && this.thug1.active) {
+            this.enemyFSM.step() 
+        }
     }
 }

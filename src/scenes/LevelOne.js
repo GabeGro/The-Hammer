@@ -11,9 +11,13 @@ class LevelOne extends Phaser.Scene {
         this.playerPunch = this.sound.add('player-punch')
         this.playerWalking = this.sound.add('player-walking')
 
-        //add players
+        //add players & enemies
         this.player1 = new Player(this, 75, 200, 'player', 0, 'right').setOrigin(1, 1).setScale(2).setSize(20, 20)
         this.thug1 = new Enemy(this, 500, 200, 'thug', 0, 'right', this.player1).setScale(2.1).setOrigin(1, 1).setSize(20, 20)
+
+        //add chairs
+        this.chair1 = this.physics.add.sprite(200, 200, 'chair').setScale(3).setSize(10, 10)
+        this.chair1.body.setImmovable(true)
 
         //damage flags
         this.thugHit = false
@@ -29,6 +33,16 @@ class LevelOne extends Phaser.Scene {
                 //console.log(`thughit: ${this.thugHit}`)
             }
         })
+        this.physics.add.collider(this.player1, this.chair1, (player, chair) => {
+            if (Phaser.Input.Keyboard.JustDown(this.keys.EKey)) {
+                this.player1.playerChair = true
+            }
+        })
+        this.physics.add.collider(this.thug1, this.chair1, (thug, chair) => {
+            if (this.playerFSM.state == 'playerChair') {
+                this.playerHit = true
+            }
+        })
 
         // set up camera
         this.cameras.main.setBounds(0, 0, this.background.width, this.background.height)
@@ -38,6 +52,7 @@ class LevelOne extends Phaser.Scene {
         // setup keyboard input
         this.keys = this.input.keyboard.createCursorKeys()
         this.enterKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER)
+        this.keys.EKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E)
 
         // debug key listener (assigned to D key)
         this.input.keyboard.on('keydown-D', function() {
@@ -51,17 +66,19 @@ class LevelOne extends Phaser.Scene {
 
     update() {
         //update fsm's
-        this.playerFSM.step()
-        this.enemyFSM.step()
+        if (this.player1 && this.player1.active) {
+            this.playerFSM.step() 
+            this.player1.update(this)
+        }
+        if (this.thug1 && this.thug1.active) {
+            this.enemyFSM.step() 
+        }
 
         //update health
-        /*if (this.playerHit) {
-            this.thug1.update()
-            this.playerHit = false
+        if (this.thug1 && this.thug1.health <= 0) {
+            this.thug1.destroy()
+            this.thug1 = null
         }
-        if (this.thugHit) {
-            this.player1.update()
-        }*/
 
         //temp scene change
         if (Phaser.Input.Keyboard.JustDown(this.enterKey)) {

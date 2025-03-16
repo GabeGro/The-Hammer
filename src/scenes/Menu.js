@@ -8,6 +8,7 @@ class Menu extends Phaser.Scene {
         this.load.path = './assets/'
         this.load.image('levelOneBG', 'TempBG.png')
         this.load.image('levelTwoBG', 'leveltwo-BG.png')
+        this.load.image('chair', 'chair.png')
         
         //load sprite sheets
         this.load.spritesheet('player', 'player-sheetTemp.png', {
