@@ -13,7 +13,7 @@ class LevelOne extends Phaser.Scene {
 
         //add players & enemies
         this.player1 = new Player(this, 75, 200, 'player', 0, 'right').setOrigin(1, 1).setScale(2).setSize(20, 20)
-        this.thug1 = new Enemy(this, 500, 200, 'thug', 0, 'right', this.player1).setScale(2.1).setOrigin(1, 1).setSize(20, 20)
+        this.thug1 = new Thug(this, 500, 200, 'thug', 0, 'right', this.player1).setScale(2.1).setOrigin(1, 1).setSize(20, 20)
 
         //add chairs
         this.chair1 = this.physics.add.sprite(200, 200, 'chair').setScale(3).setSize(10, 10)
@@ -25,10 +25,10 @@ class LevelOne extends Phaser.Scene {
 
         //add colliders
         this.physics.add.collider(this.player1, this.thug1, (player, thug) => {
-            if (this.playerFSM.state == 'playerAttack') {
+            if (this.playerFSM.state == 'playerAttack' && this.thugFSM.state == 'thugStun') {
                 this.playerHit = true
             }
-            if (this.enemyFSM.state == 'attack') {
+            if (this.thugFSM.state == 'thugAttack') {
                 this.thugHit = true
                 //console.log(`thughit: ${this.thugHit}`)
             }
@@ -39,7 +39,7 @@ class LevelOne extends Phaser.Scene {
             }
         })
         this.physics.add.collider(this.thug1, this.chair1, (thug, chair) => {
-            if (this.playerFSM.state == 'playerChair') {
+            if (this.playerFSM.state == 'playerChair' && this.thugFSM.state == 'thugStun') {
                 this.playerHit = true
             }
         })
@@ -71,7 +71,7 @@ class LevelOne extends Phaser.Scene {
             this.player1.update(this)
         }
         if (this.thug1 && this.thug1.active) {
-            this.enemyFSM.step() 
+            this.thugFSM.step() 
         }
 
         //update health

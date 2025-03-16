@@ -40,13 +40,13 @@ class Menu extends Phaser.Scene {
             frames: this.anims.generateFrameNumbers('player', { start: 5, end: 8 }),
         })
         this.anims.create({
-            key: 'walk-right',
+            key: 'thugWalk-right',
             frameRate: 8,
             repeat: -1,
             frames: this.anims.generateFrameNumbers('thug', { start: 1, end: 4 }),
         })
         this.anims.create({
-            key: 'walk-left',
+            key: 'thugWalk-left',
             frameRate: 8,
             repeat: -1,
             frames: this.anims.generateFrameNumbers('thug', { start: 5, end: 8 }),
@@ -80,13 +80,13 @@ class Menu extends Phaser.Scene {
             frames: this.anims.generateFrameNumbers('player', { start: 11, end: 12 }),
         })
         this.anims.create({
-            key: 'attack-right',
+            key: 'thugAttack-right',
             frameRate: 4,
             repeat: -1,
             frames: this.anims.generateFrameNumbers('thug', { start: 9, end: 10 }),
         })
         this.anims.create({
-            key: 'attack-left',
+            key: 'thugAttack-left',
             frameRate: 4,
             repeat: -1,
             frames: this.anims.generateFrameNumbers('thug', { start: 11, end: 12 }),
