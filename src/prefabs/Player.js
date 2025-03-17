@@ -12,6 +12,8 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         this.playerVelocity = 200    // in pixels
         this.hurtTimer = 5000       // in ms
         this.playerChair = false
+        this.thugHit = false
+        this.hammerHit = false
 
         // initialize state machine managing player
         scene.playerFSM = new StateMachine('playerIdle', {
@@ -34,6 +36,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
 class PlayerIdleState extends State {
     enter (scene, player) {
+        console.log('playerIdle')
         player.setVelocity(0)
         player.anims.play(`playerWalk-${player.direction}`)
         player.anims.stop()
@@ -61,7 +64,9 @@ class PlayerIdleState extends State {
             return
         }
 
-        if(scene.thugHit || scene.hammerHit) {
+        if(player.thugHit || player.hammerHit) {
+            console.log(`thug: ${player.thugHit}`)
+            console.log(`hammer: ${player.hammerHit}`)
             this.stateMachine.transition('playerHurt')
             return
         }
@@ -97,7 +102,7 @@ class PlayerMoveState extends State {
             return
         }
 
-        if(scene.thugHit || scene.hammerHit) {
+        if(player.thugHit || player.hammerHit) {
             this.stateMachine.transition('playerHurt')
             return
         }
@@ -147,7 +152,7 @@ class PlayerAttackState extends State {
             scene.playerPunch.play()
         }
 
-        if(scene.thugHit || scene.hammerHit) {
+        if(player.thugHit || player.hammerHit) {
             this.stateMachine.transition('playerHurt')
             return
         } else if(!(space.isDown)) { 
@@ -161,13 +166,19 @@ class PlayerBlockState extends State {
     execute(scene, player) {
         const { left, right, up, down, space, shift } = scene.keys
 
+        if(player.hammerHit && scene.hammerFSM.state == 'hammerSpecial') {
+            player.hammerHit = false
+            this.stateMachine.transition('playerHurt')
+            return
+        }
+
         player.setVelocity(0)
         player.anims.play(`playerBlock-${player.direction}`, true)
 
-        // set a short cooldown delay before going back to idle
         if (!(shift.isDown)) {
             player.clearTint()
-            scene.thugHit = false
+            player.thugHit = false
+            player.hammerHit = false
             this.stateMachine.transition('playerIdle')
             return
         }
@@ -176,6 +187,7 @@ class PlayerBlockState extends State {
 
 class PlayerHurtState extends State {
     enter(scene, player) {
+        console.log(`playerHurt`)
         player.setVelocity(0)
         player.anims.play(`playerWalk-${player.direction}`)
         player.anims.stop()
@@ -193,8 +205,9 @@ class PlayerHurtState extends State {
         // set recovery timer
         scene.time.delayedCall(250, () => {
             player.clearTint()
-            scene.thugHit = false
-            scene.hammerHit = false
+            player.thugHit = false
+            player.hammerHit = false
+            console.log(`${player.thugHit}`)
             this.stateMachine.transition('playerIdle')
             return
         })

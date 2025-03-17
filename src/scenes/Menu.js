@@ -131,6 +131,18 @@ class Menu extends Phaser.Scene {
             repeat: -1,
             frames: this.anims.generateFrameNumbers('hammer', { start: 11, end: 12 }),
         })
+        this.anims.create({
+            key: 'hammerSpecial-right',
+            frameRate: 2,
+            repeat: -1,
+            frames: this.anims.generateFrameNumbers('hammer', { start: 9, end: 10 }),
+        })
+        this.anims.create({
+            key: 'hammerSpecial-left',
+            frameRate: 2,
+            repeat: -1,
+            frames: this.anims.generateFrameNumbers('hammer', { start: 11, end: 12 }),
+        })
 
         // proceed once loading completes
         this.scene.start('levelOneScene')

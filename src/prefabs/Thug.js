@@ -11,6 +11,7 @@ class Thug extends Phaser.Physics.Arcade.Sprite {
         this.direction = direction 
         this.thugVelocity = 75    // in pixels
         this.health = 100
+        this.playerHit = false
 
         // initialize state machine managing thug (initial state, possible states, state args[])
         scene.thugFSM = new StateMachine('thugIdle', {
@@ -30,7 +31,7 @@ class thugIdleState extends State {
         thug.anims.play(`thugWalk-${thug.direction}`)
         thug.anims.stop()
         thug.setSize(20, 20)
-        scene.playerHit = false
+        thug.playerHit = false
     }
 
     execute(scene, thug) {
@@ -98,7 +99,7 @@ class thugHurtState extends State {
     }
 
     execute(scene, thug) {
-        if(scene.playerHit) {
+        if(thug.playerHit) {
             thug.setTint(0xFF0000)
             scene.time.delayedCall(500, () => {
                 if(thug.health > 0) {
@@ -106,7 +107,7 @@ class thugHurtState extends State {
                     console.log(`health: ${thug.health}`)
                     thug.clearTint()
                     thug.setVelocity(0)
-                    scene.playerHit = false
+                    thug.playerHit = false
                 }
             })
         }
@@ -128,7 +129,7 @@ class ThugStunState extends State {
         })
     }
     execute(scene, thug) {
-        if (scene.playerHit) {
+        if (thug.playerHit) {
             this.stateMachine.transition('thugHurt')
             return
         }

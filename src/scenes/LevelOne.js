@@ -20,27 +20,22 @@ class LevelOne extends Phaser.Scene {
         this.chair1 = this.physics.add.sprite(200, 200, 'chair').setScale(3).setSize(10, 10)
         this.chair1.body.setImmovable(true)
 
-        //damage flags
-        this.thugHit = false
-        this.playerHit = false
-        this.hammerHit = false
-
         //add colliders
         this.physics.add.collider(this.player1, this.thug1, (player, thug) => {
             if (this.playerFSM.state == 'playerAttack' && this.thugFSM.state == 'thugStun') {
-                this.playerHit = true
+                this.thug1.playerHit = true
             }
             if (this.thugFSM.state == 'thugAttack') {
-                this.thugHit = true
+                this.player1.thugHit = true
                 //console.log(`thughit: ${this.thugHit}`)
             }
         })
         this.physics.add.collider(this.player1, this.hammer, (player, hammer) => {
             if (this.playerFSM.state == 'playerAttack' && this.hammerFSM.state == 'hammerStun') {
-                this.playerHit = true
+                this.hammer.playerHit = true
             }
-            if (this.hammerFSM.state == 'hammerAttack') {
-                this.hammerHit = true
+            if (this.hammerFSM.state == 'hammerAttack' || this.hammerFSM.state == 'hammerSpecial') {
+                this.player1.hammerHit = true
                 //console.log(`thughit: ${this.thugHit}`)
             }
         })
@@ -51,12 +46,12 @@ class LevelOne extends Phaser.Scene {
         })
         this.physics.add.collider(this.thug1, this.chair1, (thug, chair) => {
             if (this.playerFSM.state == 'playerChair' && this.thugFSM.state == 'thugStun') {
-                this.playerHit = true
+                this.thug1.playerHit = true
             }
         })
         this.physics.add.collider(this.hammer, this.chair1, (hammer, chair) => {
             if (this.playerFSM.state == 'playerChair' && this.hammerFSM.state == 'hammerStun') {
-                this.playerHit = true
+                this.hammer.playerHit = true
             }
         })
 
@@ -77,7 +72,7 @@ class LevelOne extends Phaser.Scene {
         }, this)
 
         // update instruction text
-        document.getElementById('info').innerHTML = '<strong>CharacterFSM.js:</strong> Arrows: move | SPACE: attack | SHIFT: block | H: hurt (knockback) | Return: next level | D: debug (toggle)'
+        document.getElementById('info').innerHTML = '<strong>CharacterFSM.js:</strong> Arrows: move | SPACE: attack | SHIFT: block | Return: next level | D: debug (toggle)'
     }
 
     update() {

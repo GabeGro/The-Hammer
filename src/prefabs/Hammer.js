@@ -11,6 +11,8 @@ class Hammer extends Phaser.Physics.Arcade.Sprite {
         this.direction = direction 
         this.hammerVelocity = 75    // in pixels
         this.health = 100
+        this.specialAttack = false
+        this.playerHit = false
 
         // initialize state machine managing hammer (initial state, possible states, state args[])
         scene.hammerFSM = new StateMachine('hammerIdle', {
@@ -19,6 +21,7 @@ class Hammer extends Phaser.Physics.Arcade.Sprite {
             hammerAttack: new hammerAttackState(),
             hammerHurt: new hammerHurtState(),
             hammerStun: new hammerStunState(),
+            hammerSpecial: new hammerSpecialState(),
         }, [scene, this])
     }
 }
@@ -30,7 +33,7 @@ class hammerIdleState extends State {
         hammer.anims.play(`hammerWalk-${hammer.direction}`)
         hammer.anims.stop()
         hammer.setSize(20, 20)
-        scene.playerHit = false
+        hammer.playerHit = false
     }
 
     execute(scene, hammer) {
@@ -61,8 +64,12 @@ class hammerMoveState extends State {
         hammer.setVelocity(direction.x * hammer.hammerVelocity, direction.y * hammer.hammerVelocity)
         hammer.anims.play(`hammerWalk-${hammer.direction}`, true)
 
-        if (Phaser.Math.Distance.Between(hammer.x, hammer.y, player.x, player.y) < 59) {
+        if (Phaser.Math.Distance.Between(hammer.x, hammer.y, player.x, player.y) < 80 && !hammer.specialAttack) {
             this.stateMachine.transition('hammerAttack')
+        }
+
+        if (Phaser.Math.Distance.Between(hammer.x, hammer.y, player.x, player.y) < 80 && hammer.specialAttack) {
+            this.stateMachine.transition('hammerSpecial')
         }
     }
 }
@@ -75,6 +82,24 @@ class hammerAttackState extends State {
         hammer.setSize(35, 20)
 
         scene.time.delayedCall(2000, () => {
+            hammer.specialAttack = true
+            this.stateMachine.transition('hammerStun')
+            return
+        })
+    }
+}
+
+class hammerSpecialState extends State {
+    enter(scene, hammer) {
+        console.log('hammerSpecial')
+        hammer.setVelocity(0)
+        hammer.setTint(0x00FF00)
+        hammer.anims.play(`hammerSpecial-${hammer.direction}`)
+        hammer.setSize(35, 20)
+
+        scene.time.delayedCall(2000, () => {
+            hammer.specialAttack = false
+            hammer.clearTint()
             this.stateMachine.transition('hammerStun')
             return
         })
@@ -98,7 +123,7 @@ class hammerHurtState extends State {
     }
 
     execute(scene, hammer) {
-        if(scene.playerHit) {
+        if(hammer.playerHit) {
             hammer.setTint(0xFF0000)
             scene.time.delayedCall(500, () => {
                 if(hammer.health > 0) {
@@ -106,7 +131,7 @@ class hammerHurtState extends State {
                     console.log(`health: ${hammer.health}`)
                     hammer.clearTint()
                     hammer.setVelocity(0)
-                    scene.playerHit = false
+                    hammer.playerHit = false
                 }
             })
         }
@@ -115,7 +140,7 @@ class hammerHurtState extends State {
 
 class hammerStunState extends State {
     enter(scene, hammer) {
-        console.log('stun')
+        console.log('hammerStun')
         hammer.anims.play(`hammerWalk-${hammer.direction}`)
         hammer.anims.stop()
         hammer.setSize(20, 20)
@@ -128,7 +153,7 @@ class hammerStunState extends State {
         })
     }
     execute(scene, hammer) {
-        if (scene.playerHit) {
+        if (hammer.playerHit) {
             this.stateMachine.transition('hammerHurt')
             return
         }
