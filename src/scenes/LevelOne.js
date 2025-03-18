@@ -7,6 +7,8 @@ class LevelOne extends Phaser.Scene {
         // add background image
         this.background = this.add.image(0, 0, 'levelOneBG').setOrigin(0)
 
+        this.pause = false
+
         //add sfx and music
         this.playerPunch = this.sound.add('player-punch')
         this.playerWalking = this.sound.add('player-walking')
@@ -54,12 +56,12 @@ class LevelOne extends Phaser.Scene {
                 this.chairGrab = chair
             }
         })
-        this.physics.add.collider(this.thugs, this.chair1, (thug, chair) => {
+        this.physics.add.collider(this.thugs, this.chairs, (thug, chair) => {
             if (this.playerFSM.state == 'playerChair' && thug.thugFSM.state == 'thugStun') {
                 thug.playerHit = true
             }
         })
-        this.physics.add.collider(this.hammer, this.chair1, (hammer, chair) => {
+        this.physics.add.collider(this.hammer, this.chairs, (hammer, chair) => {
             if (this.playerFSM.state == 'playerChair' && this.hammerFSM.state == 'hammerStun') {
                 this.hammer.playerHit = true
             }
@@ -74,6 +76,7 @@ class LevelOne extends Phaser.Scene {
         this.keys = this.input.keyboard.createCursorKeys()
         this.enterKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER)
         this.keys.EKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E)
+        this.ESCKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC)
 
         // debug key listener (assigned to D key)
         this.input.keyboard.on('keydown-D', function() {
@@ -86,37 +89,74 @@ class LevelOne extends Phaser.Scene {
     }
 
     update() {
-        //update fsm's
-        if (this.player1 && this.player1.active) {
-            this.playerFSM.step()
-            this.player1.update(this)
-        }
-        if (this.thugs && this.thugs.active) {
-            this.thugs.getChildren().forEach(thug => {
-                thug.update()
-            })
-        }
-        if (this.hammer && this.hammer.active) {
-            this.hammerFSM.step() 
+        if (!this.pause) {
+            //update fsm's
+            if (this.player1 && this.player1.active) {
+                this.playerFSM.step()
+                this.player1.update(this)
+            }
+            if (this.thugs && this.thugs.active) {
+                this.thugs.getChildren().forEach(thug => {
+                    thug.update()
+                })
+            }
+            if (this.hammer && this.hammer.active) {
+                this.hammerFSM.step() 
+            }
+
+            //update health
+            if (this.thugs && this.thugs.active) {
+                this.thugs.getChildren().forEach(thug => {
+                    if (thug && thug.health <= 0) {
+                        thug.destroy()
+                        thug = null
+                    }
+                })
+            }
+            if (this.hammer && this.hammer.health <= 0) {
+                this.hammer.destroy()
+                this.hammer = null
+            }
+
+            //temp scene change
+            if (Phaser.Input.Keyboard.JustDown(this.enterKey)) {
+                this.scene.start('levelTwoScene')
+            }
         }
 
-        //update health
-        if (this.thugs && this.thugs.active) {
-            this.thugs.getChildren().forEach(thug => {
-                if (thug && thug.health <= 0) {
-                    thug.destroy()
-                    thug = null
-                }
-            })
+        //pause scene
+        if (Phaser.Input.Keyboard.JustDown(this.ESCKey)) {
+            if (this.pause) {
+                this.resumeScene()
+            } else {
+                this.pauseScene()
+            }
         }
-        if (this.hammer && this.hammer.health <= 0) {
-            this.hammer.destroy()
-            this.hammer = null
-        }
+    }
 
-        //temp scene change
-        if (Phaser.Input.Keyboard.JustDown(this.enterKey)) {
-            this.scene.start('levelTwoScene')
-        }
+    pauseScene() {
+        this.physics.pause()
+        this.pause = true
+
+        this.overlay = this.add.rectangle(400, 300, 800, 600, 0x000000, 0.3)
+        this.pauseText = this.add.bitmapText(200, 100, 'jersey', 'PAUSE', 90).setOrigin(0.5, 0.5)
+        /*this.resumeButton = this.add.image(350, 300, 'resume-button').setOrigin(0.5, 0.5).setScale(0.2).setInteractive().on('pointerdown', () => {
+            //this.sound.play('select')
+            this.input.keyboard.emit(this.ESCKey)
+        }).on('pointerover', () => this.resumeButton.setTint(0xaaaaaa)).on('pointerout', () => this.resumeButton.clearTint())*/
+        this.menuButton = this.add.image(200, 220, 'menu-button').setOrigin(0.5, 0.5).setScale(0.2).setInteractive().on('pointerdown', () => {
+            //this.sound.play('select')
+            this.scene.start('menuScene')
+        }).on('pointerover', () => this.menuButton.setTint(0xaaaaaa)).on('pointerout', () => this.menuButton.clearTint())
+    }
+
+    resumeScene() {
+        this.physics.resume()
+        this.pause = false
+
+        this.overlay.destroy()
+        this.menuButton.destroy()
+        this.pauseText.destroy()
+        //this.resumeButton.destroy()
     }
 }

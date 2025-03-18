@@ -9,6 +9,12 @@ class Menu extends Phaser.Scene {
         this.load.image('levelOneBG', 'TempBG.png')
         this.load.image('levelTwoBG', 'leveltwo-BG.png')
         this.load.image('chair', 'chair.png')
+        this.load.image('play-button', 'play-button.png')
+        this.load.image('resume-button', 'resume-button.png')
+        this.load.image('menu-button', 'menu-button.png')
+
+        //load fonts
+        this.load.bitmapFont('jersey', 'Jersey/Jersey.png', 'Jersey/Jersey.xml')
         
         //load sprite sheets
         this.load.spritesheet('player', 'player-sheetTemp.png', {
@@ -30,6 +36,24 @@ class Menu extends Phaser.Scene {
     }
 
     create() {
+        //load animations
+        this.animationCreation()
+
+        this.add.image(0, 0, 'levelOneBG').setOrigin(0)
+        this.add.bitmapText(200, 75, 'jersey', 'THE', 60).setOrigin(0.5, 0.5)
+        this.add.bitmapText(200, 130, 'jersey', 'HAMMER', 90).setOrigin(0.5, 0.5)
+        this.add.sprite
+
+        //buttons
+        let playButton = this.add.image(200, 220, 'play-button').setOrigin(0.5, 0.5).setScale(0.2).setInteractive().on('pointerdown', () => {
+            //this.sound.play('select')
+            this.scene.start('levelOneScene')
+        }).on('pointerover', () => playButton.setTint(0xaaaaaa)).on('pointerout', () => playButton.clearTint())
+
+        
+    }
+
+    animationCreation() {
         // walking animations
         this.anims.create({
             key: 'playerWalk-right',
@@ -143,8 +167,5 @@ class Menu extends Phaser.Scene {
             repeat: -1,
             frames: this.anims.generateFrameNumbers('hammer', { start: 11, end: 12 }),
         })
-
-        // proceed once loading completes
-        this.scene.start('levelOneScene')
     }
 }
