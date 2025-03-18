@@ -28,8 +28,8 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
     update(scene) {
         if(this.playerChair) {
-            scene.chair1.x = this.x - 32.5
-            scene.chair1.y = this.y - 65
+            scene.chairGrab.x = this.x - 32.5
+            scene.chairGrab.y = this.y - 65
         }
     }
 }
@@ -53,7 +53,6 @@ class PlayerIdleState extends State {
             return
         }
         
-        // transition to swing if pressing space
         if(space.isDown) {
             this.stateMachine.transition('playerAttack')
             return
@@ -222,17 +221,17 @@ class PlayerChairState extends State {
         player.playerChair = false
         switch(player.direction) {
             case 'left':
-                scene.chair1.x -= 30
-                scene.chair1.y += 30
+                scene.chairGrab.x -= 30
+                scene.chairGrab.y += 30
                 break
             case 'right':
-                scene.chair1.x += 30
-                scene.chair1.y += 30
+                scene.chairGrab.x += 30
+                scene.chairGrab.y += 30
                 break
         }
 
         scene.time.delayedCall(200, () => {
-            scene.chair1.destroy()
+            scene.chairGrab.destroy()
             this.stateMachine.transition('playerIdle')
             return
         })

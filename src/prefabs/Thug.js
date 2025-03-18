@@ -14,13 +14,17 @@ class Thug extends Phaser.Physics.Arcade.Sprite {
         this.playerHit = false
 
         // initialize state machine managing thug (initial state, possible states, state args[])
-        scene.thugFSM = new StateMachine('thugIdle', {
+        this.thugFSM = new StateMachine('thugIdle', {
             thugIdle: new thugIdleState(),
             thugMove: new thugMoveState(),
             thugAttack: new thugAttackState(),
             thugHurt: new thugHurtState(),
             thugStun: new ThugStunState(),
         }, [scene, this])
+    }
+
+    update() {
+        this.thugFSM.step()
     }
 }
 
