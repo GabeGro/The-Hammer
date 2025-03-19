@@ -41,7 +41,13 @@ class PlayerIdleState extends State {
     enter (scene, player) {
         console.log('playerIdle')
         player.setVelocity(0)
-        player.anims.play(`playerWalk-${player.direction}`)
+        if (!player.playerChair) {
+            player.anims.play(`playerWalk-${player.direction}`)
+            player.anims.stop()
+        } else {
+            player.anims.play(`playerChair-${player.direction}`)
+            player.anims.stop()
+        }
         player.anims.stop()
         player.setSize(20, 20)
     }
@@ -132,7 +138,11 @@ class PlayerMoveState extends State {
         // normalize movement vector, update player position, and play proper animation
         moveDirection.normalize()
         player.setVelocity(player.playerVelocity * moveDirection.x, player.playerVelocity * moveDirection.y)
-        player.anims.play(`playerWalk-${player.direction}`, true)
+        if (!player.playerChair) {
+            player.anims.play(`playerWalk-${player.direction}`, true)
+        } else {
+            player.anims.play(`playerChair-${player.direction}`, true)
+        }
         if (!scene.playerWalking.isPlaying) {
             scene.playerWalking.stop()
             scene.playerWalking.play()
@@ -191,8 +201,13 @@ class PlayerHurtState extends State {
     enter(scene, player) {
         console.log(`playerHurt`)
         player.setVelocity(0)
-        player.anims.play(`playerWalk-${player.direction}`)
-        player.anims.stop()
+        if (!player.playerChair) {
+            player.anims.play(`playerWalk-${player.direction}`)
+            player.anims.stop()
+        } else {
+            player.anims.play(`playerChair-${player.direction}`)
+            player.anims.stop()
+        }
         player.setTint(0xFF0000)
         if (player.thugHit) {
             player.health -= 50
@@ -231,10 +246,14 @@ class PlayerChairState extends State {
         player.playerChair = false
         switch(player.direction) {
             case 'left':
+                player.anims.play(`playerAttack-${player.direction}`)
+                player.anims.stop()
                 scene.chairGrab.x -= 30
                 scene.chairGrab.y += 30
                 break
             case 'right':
+                player.anims.play(`playerAttack-${player.direction}`)
+                player.anims.stop()
                 scene.chairGrab.x += 30
                 scene.chairGrab.y += 30
                 break

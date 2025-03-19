@@ -77,7 +77,7 @@ class thugAttackState extends State {
         console.log('thugAttack')
         thug.setVelocity(0)
         thug.anims.play(`thugAttack-${thug.direction}`)
-        thug.setSize(35, 20)
+        thug.setSize(37, 20)
 
         scene.time.delayedCall(2000, () => {
             this.stateMachine.transition('thugStun')

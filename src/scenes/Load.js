@@ -6,7 +6,7 @@ class Load extends Phaser.Scene {
     preload() {
         //load images
         this.load.path = './assets/'
-        this.load.image('levelOneBG', 'TempBG.png')
+        this.load.image('levelOneBG', 'levelOne-BG.png')
         this.load.image('levelTwoBG', 'leveltwo-BG.png')
         this.load.image('chair', 'chair.png')
         this.load.image('play-button', 'play-button.png')
@@ -19,7 +19,7 @@ class Load extends Phaser.Scene {
         //load sprite sheets
         this.load.spritesheet('player', 'player-sheet.png', {
             frameWidth: 32,
-            frameHeight: 32,
+            frameHeight: 34,
         })
         this.load.spritesheet('thug', 'thug-sheet.png', {
             frameWidth: 32,
@@ -35,7 +35,7 @@ class Load extends Phaser.Scene {
         })
 
         //load sfx and music
-        this.load.audio('player-punch', 'player-punch.mp3')
+        this.load.audio('player-punch', 'player-punch.wav')
         this.load.audio('player-walking', 'player-walking.wav')
     }
 
@@ -146,26 +146,26 @@ class Load extends Phaser.Scene {
         this.anims.create({
             key: 'hammerSpecial-right',
             frameRate: 2,
-            repeat: -1,
-            frames: this.anims.generateFrameNumbers('hammer', { start: 9, end: 10 }),
+            repeat: 0,
+            frames: this.anims.generateFrameNumbers('hammer', { start: 15, end: 16 }),
         })
         this.anims.create({
             key: 'hammerSpecial-left',
             frameRate: 2,
-            repeat: -1,
-            frames: this.anims.generateFrameNumbers('hammer', { start: 11, end: 12 }),
+            repeat: 0,
+            frames: this.anims.generateFrameNumbers('hammer', { start: 17, end: 18 }),
         })
         this.anims.create({
             key: 'playerChair-right',
-            frameRate: 2,
+            frameRate: 8,
             repeat: -1,
-            frames: this.anims.generateFrameNumbers('player', { start: 15, end: 15 }),
+            frames: this.anims.generateFrameNumbers('player', { start: 15, end: 18 }),
         })
         this.anims.create({
             key: 'playerChair-left',
-            frameRate: 2,
+            frameRate: 8,
             repeat: -1,
-            frames: this.anims.generateFrameNumbers('player', { start: 16, end: 16 }),
+            frames: this.anims.generateFrameNumbers('player', { start: 19, end: 22 }),
         })
 
         //healthbar animations

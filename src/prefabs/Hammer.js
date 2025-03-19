@@ -79,7 +79,7 @@ class hammerAttackState extends State {
         console.log('hammerAttack')
         hammer.setVelocity(0)
         hammer.anims.play(`hammerAttack-${hammer.direction}`)
-        hammer.setSize(35, 20)
+        hammer.setSize(40, 20)
 
         scene.time.delayedCall(2000, () => {
             hammer.specialAttack = true
@@ -93,11 +93,16 @@ class hammerSpecialState extends State {
     enter(scene, hammer) {
         console.log('hammerSpecial')
         hammer.setVelocity(0)
-        hammer.setTint(0x00FF00)
+        hammer.setTint(0x0000FF)
         hammer.anims.play(`hammerSpecial-${hammer.direction}`)
-        hammer.setSize(35, 20)
 
-        scene.time.delayedCall(2000, () => {
+        hammer.on('animationupdate', (anim, frame) => {
+            if (anim.key === `hammerSpecial-${hammer.direction}` && frame.index == 2) {
+                hammer.setSize(40,20)
+            }
+        })
+
+        scene.time.delayedCall(1000, () => {
             hammer.specialAttack = false
             hammer.clearTint()
             this.stateMachine.transition('hammerStun')

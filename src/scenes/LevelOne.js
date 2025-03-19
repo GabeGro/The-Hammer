@@ -14,10 +14,10 @@ class LevelOne extends Phaser.Scene {
         this.playerWalking = this.sound.add('player-walking')
 
         //add players & enemies
-        this.player1 = new Player(this, 75, 200, 'player', 0, 'right').setOrigin(1, 1).setScale(2).setSize(20, 20)
-        this.thug1 = new Thug(this, 500, 200, 'thug', 0, 'right').setScale(2.1).setOrigin(1, 1).setSize(20, 20)
-        this.thug2 = new Thug(this, 500, 300, 'thug', 0, 'right').setScale(2.1).setOrigin(1, 1).setSize(20, 20)
-        this.hammer = new Hammer(this, 700, 200, 'hammer', 0, 'right').setScale(3).setOrigin(1, 1).setSize(20, 20)
+        this.player1 = new Player(this, 75, 200, 'player', 0, 'right').setOrigin(0.5).setScale(2).setSize(20, 20)
+        this.thug1 = new Thug(this, 500, 200, 'thug', 0, 'right').setScale(2.1).setOrigin(0.5).setSize(20, 20)
+        this.thug2 = new Thug(this, 500, 300, 'thug', 0, 'right').setScale(2.1).setOrigin(0.5).setSize(20, 20)
+        this.hammer = new Hammer(this, 700, 200, 'hammer', 0, 'right').setScale(3).setOrigin(0.5).setSize(20, 20)
 
         this.thugs = this.add.group([this.thug1, this.thug2])
 
@@ -121,7 +121,7 @@ class LevelOne extends Phaser.Scene {
                 this.hammer = null
             }
 
-            console.log(`${this.player1.health}`)
+            //console.log(`${this.player1.health}`)
             if (this.player1.health <= 0) {
                 this.healthbar.setFrame(10)
             } else if (this.player1.health <= 10) {
