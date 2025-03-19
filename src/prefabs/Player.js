@@ -11,6 +11,9 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         this.direction = direction 
         this.playerVelocity = 200    // in pixels
         this.hurtTimer = 5000       // in ms
+        this.health = 100
+
+        //damage & chair flags
         this.playerChair = false
         this.thugHit = false
         this.hammerHit = false
@@ -190,7 +193,12 @@ class PlayerHurtState extends State {
         player.setVelocity(0)
         player.anims.play(`playerWalk-${player.direction}`)
         player.anims.stop()
-        player.setTint(0xFF0000)     // turn red
+        player.setTint(0xFF0000)
+        if (player.thugHit) {
+            player.health -= 50
+        } else if (player.hammerHit) {
+            player.health -= 25
+        }
 
         switch(player.direction) {
             case 'left':
@@ -203,12 +211,14 @@ class PlayerHurtState extends State {
 
         // set recovery timer
         scene.time.delayedCall(250, () => {
-            player.clearTint()
-            player.thugHit = false
-            player.hammerHit = false
-            console.log(`${player.thugHit}`)
-            this.stateMachine.transition('playerIdle')
-            return
+            if (player.health > 0) {
+                player.clearTint()
+                player.thugHit = false
+                player.hammerHit = false
+                console.log(`${player.thugHit}`)
+                this.stateMachine.transition('playerIdle')
+                return
+            }
         })
     }
 }

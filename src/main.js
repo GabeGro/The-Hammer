@@ -15,7 +15,7 @@ const config = {
             debug: true
         }
     },
-    scene: [ Menu , LevelOne , LevelTwo ]
+    scene: [ Load, Menu , LevelOne , LevelTwo ]
 }
 
 const game = new Phaser.Game(config)

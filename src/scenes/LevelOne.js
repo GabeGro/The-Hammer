@@ -72,6 +72,9 @@ class LevelOne extends Phaser.Scene {
         this.cameras.main.startFollow(this.player1, false, 0.5, 0.5)
         this.physics.world.setBounds(0, 70, this.background.width, this.background.height-90)
 
+        //add healthbar
+        this.healthbar = this.add.sprite(this.cameras.main.scrollX + 10, this.cameras.main.scrollY + 7, 'healthbar', 0).setOrigin(0).setScale(0.9)
+
         // setup keyboard input
         this.keys = this.input.keyboard.createCursorKeys()
         this.enterKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER)
@@ -95,12 +98,12 @@ class LevelOne extends Phaser.Scene {
                 this.playerFSM.step()
                 this.player1.update(this)
             }
-            if (this.thugs && this.thugs.active) {
+            if (this.thugs && this.thugs.active && this.player1) {
                 this.thugs.getChildren().forEach(thug => {
                     thug.update()
                 })
             }
-            if (this.hammer && this.hammer.active) {
+            if (this.hammer && this.hammer.active && this.player1) {
                 this.hammerFSM.step() 
             }
 
@@ -118,11 +121,45 @@ class LevelOne extends Phaser.Scene {
                 this.hammer = null
             }
 
-            //temp scene change
-            if (Phaser.Input.Keyboard.JustDown(this.enterKey)) {
-                this.scene.start('levelTwoScene')
+            console.log(`${this.player1.health}`)
+            if (this.player1.health <= 0) {
+                this.healthbar.setFrame(10)
+            } else if (this.player1.health <= 10) {
+                this.healthbar.setFrame(9)
+            } else if (this.player1.health <= 20) {
+                this.healthbar.setFrame(8)
+            } else if (this.player1.health <= 30) {
+                this.healthbar.setFrame(7)
+            } else if (this.player1.health <= 40) {
+                this.healthbar.setFrame(6)
+            } else if (this.player1.health <= 50) {
+                this.healthbar.setFrame(5)
+            } else if (this.player1.health <= 60) {
+                this.healthbar.setFrame(4)
+            } else if (this.player1.health <= 70) {
+                this.healthbar.setFrame(3)
+            } else if (this.player1.health <= 80) {
+                this.healthbar.setFrame(2)
+            } else if (this.player1.health <= 90) {
+                this.healthbar.setFrame(1)
             }
-        }
+            this.healthbar.x = this.cameras.main.scrollX + 10
+            this.healthbar.y = this.cameras.main.scrollY + 7
+
+            if (this.player1 && this.player1.health <= 0) {
+                this.player1.destroy()
+                this.player1 = null
+                this.gameOverScreen()
+            }
+
+            //update healthbar
+            
+
+                //temp scene change
+                if (Phaser.Input.Keyboard.JustDown(this.enterKey)) {
+                    this.scene.start('levelTwoScene')
+                }
+            }
 
         //pause scene
         if (Phaser.Input.Keyboard.JustDown(this.ESCKey)) {
@@ -139,12 +176,12 @@ class LevelOne extends Phaser.Scene {
         this.pause = true
 
         this.overlay = this.add.rectangle(400, 300, 800, 600, 0x000000, 0.3)
-        this.pauseText = this.add.bitmapText(200, 100, 'jersey', 'PAUSE', 90).setOrigin(0.5, 0.5)
+        this.pauseText = this.add.bitmapText(this.cameras.main.scrollX + 200, this.cameras.main.scrollY + 100, 'jersey', 'PAUSE', 90).setOrigin(0.5, 0.5)
         /*this.resumeButton = this.add.image(350, 300, 'resume-button').setOrigin(0.5, 0.5).setScale(0.2).setInteractive().on('pointerdown', () => {
             //this.sound.play('select')
             this.input.keyboard.emit(this.ESCKey)
         }).on('pointerover', () => this.resumeButton.setTint(0xaaaaaa)).on('pointerout', () => this.resumeButton.clearTint())*/
-        this.menuButton = this.add.image(200, 220, 'menu-button').setOrigin(0.5, 0.5).setScale(0.2).setInteractive().on('pointerdown', () => {
+        this.menuButton = this.add.image(this.cameras.main.scrollX + 200, this.cameras.main.scrollY + 220, 'menu-button').setOrigin(0.5, 0.5).setScale(0.2).setInteractive().on('pointerdown', () => {
             //this.sound.play('select')
             this.scene.start('menuScene')
         }).on('pointerover', () => this.menuButton.setTint(0xaaaaaa)).on('pointerout', () => this.menuButton.clearTint())
@@ -158,5 +195,17 @@ class LevelOne extends Phaser.Scene {
         this.menuButton.destroy()
         this.pauseText.destroy()
         //this.resumeButton.destroy()
+    }
+
+    gameOverScreen() {
+        this.physics.pause()
+        this.pause = true
+
+        this.overlay = this.add.rectangle(400, 300, 800, 600, 0x000000, 0.3)
+        this.pauseText = this.add.bitmapText(this.cameras.main.scrollX + 200, this.cameras.main.scrollY + 100, 'jersey', 'GAME OVER', 90).setOrigin(0.5, 0.5)
+        this.menuButton = this.add.image(this.cameras.main.scrollX + 200, this.cameras.main.scrollY + 220, 'menu-button').setOrigin(0.5, 0.5).setScale(0.2).setInteractive().on('pointerdown', () => {
+            //this.sound.play('select')
+            this.scene.start('menuScene')
+        }).on('pointerover', () => this.menuButton.setTint(0xaaaaaa)).on('pointerout', () => this.menuButton.clearTint())
     }
 }
