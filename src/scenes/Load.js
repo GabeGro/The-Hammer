@@ -37,6 +37,19 @@ class Load extends Phaser.Scene {
         //load sfx and music
         this.load.audio('player-punch', 'player-punch.wav')
         this.load.audio('player-walking', 'player-walking.wav')
+        this.load.audio('player-hurt', 'player-hurt.wav')
+
+        this.load.audio('thug-attack', 'thug-attack.wav')
+        this.load.audio('thug-walking', 'thug-walking.wav')
+        this.load.audio('thug-hurt', 'thug-hurt.wav')
+
+        this.load.audio('hammer-attack', 'hammer-attack.wav')
+        this.load.audio('hammer-walking', 'hammer-walking.wav')
+        this.load.audio('hammer-hurt', 'hammer-hurt.wav')
+        this.load.audio('hammer-special', 'hammer-special.wav')
+
+        this.load.audio('gameover', 'gameover.wav')
+        this.load.audio('bgMusic', 'bgMusic.mp3')
     }
 
     create() {

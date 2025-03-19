@@ -31,8 +31,8 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
     update(scene) {
         if(this.playerChair) {
-            scene.chairGrab.x = this.x - 32.5
-            scene.chairGrab.y = this.y - 65
+            scene.chairGrab.x = this.x
+            scene.chairGrab.y = this.y - 30
         }
     }
 }
@@ -158,7 +158,7 @@ class PlayerAttackState extends State {
         player.anims.play(`playerAttack-${player.direction}`, true)
         player.setSize(35, 20)
             
-            //play sfx
+        //play sfx
         if (!scene.playerPunch.isPlaying) {
             scene.playerPunch.stop()
             scene.playerPunch.play()
@@ -201,6 +201,7 @@ class PlayerHurtState extends State {
     enter(scene, player) {
         console.log(`playerHurt`)
         player.setVelocity(0)
+        scene.playerHurt.play()
         if (!player.playerChair) {
             player.anims.play(`playerWalk-${player.direction}`)
             player.anims.stop()

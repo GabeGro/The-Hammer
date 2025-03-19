@@ -12,6 +12,18 @@ class LevelOne extends Phaser.Scene {
         //add sfx and music
         this.playerPunch = this.sound.add('player-punch')
         this.playerWalking = this.sound.add('player-walking')
+        this.playerHurt = this.sound.add('player-hurt')
+
+        this.thugAttack = this.sound.add('thug-attack')
+        this.thugWalking = this.sound.add('thug-walking')
+        this.thugHurt = this.sound.add('thug-hurt')
+
+        this.hammerAttack = this.sound.add('hammer-attack')
+        this.hammerSpecial = this.sound.add('hammer-special')
+        this.hammerWalking = this.sound.add('hammer-walking')
+        this.hammerHurt = this.sound.add('hammer-hurt')
+
+        this.gameOverFX = this.sound.add('gameover')
 
         //add players & enemies
         this.player1 = new Player(this, 75, 200, 'player', 0, 'right').setOrigin(0.5).setScale(2).setSize(20, 20)
@@ -70,7 +82,7 @@ class LevelOne extends Phaser.Scene {
         // set up camera
         this.cameras.main.setBounds(0, 0, this.background.width, this.background.height)
         this.cameras.main.startFollow(this.player1, false, 0.5, 0.5)
-        this.physics.world.setBounds(0, 70, this.background.width, this.background.height-90)
+        this.physics.world.setBounds(0, 70, this.background.width - 40, this.background.height-90)
 
         //add healthbar
         this.healthbar = this.add.sprite(this.cameras.main.scrollX + 10, this.cameras.main.scrollY + 7, 'healthbar', 0).setOrigin(0).setScale(0.9)
@@ -198,6 +210,7 @@ class LevelOne extends Phaser.Scene {
     }
 
     gameOverScreen() {
+        this.gameOverFX.play()
         this.physics.pause()
         this.pause = true
 

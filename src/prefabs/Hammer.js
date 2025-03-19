@@ -99,6 +99,7 @@ class hammerSpecialState extends State {
         hammer.on('animationupdate', (anim, frame) => {
             if (anim.key === `hammerSpecial-${hammer.direction}` && frame.index == 2) {
                 hammer.setSize(40,20)
+                scene.hammerSpecial.play()
             }
         })
 
@@ -130,6 +131,10 @@ class hammerHurtState extends State {
     execute(scene, hammer) {
         if(hammer.playerHit) {
             hammer.setTint(0xFF0000)
+            if (!scene.hammerHurt.isPlaying) {
+                scene.hammerHurt.stop()
+                scene.hammerHurt.play()
+            }
             scene.time.delayedCall(500, () => {
                 if(hammer.health > 0) {
                     hammer.health -= 10
