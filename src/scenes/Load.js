@@ -5,52 +5,52 @@ class Load extends Phaser.Scene {
 
     preload() {
         //load images
-        this.load.path = './assets/'
-        this.load.image('levelOneBG', 'levelOne-BG.png')
-        this.load.image('levelTwoBG', 'leveltwo-BG.png')
-        this.load.image('chair', 'chair.png')
-        this.load.image('play-button', 'play-button.png')
-        this.load.image('resume-button', 'resume-button.png')
-        this.load.image('menu-button', 'menu-button.png')
+        //this.load.path = './assets/'
+        this.load.image('levelOneBG', './The-Hammer/assets/levelOne-BG.png')
+        this.load.image('levelTwoBG', './The-Hammer/assets/leveltwo-BG.png')
+        this.load.image('chair', './assets/chair.png')
+        this.load.image('play-button', './assets/play-button.png')
+        this.load.image('resume-button', './assets/resume-button.png')
+        this.load.image('menu-button', './assets/menu-button.png')
 
         //load fonts
-        this.load.bitmapFont('jersey', 'Jersey/Jersey.png', 'Jersey/Jersey.xml')
+        this.load.bitmapFont('jersey', 'Jersey/Jersey.png', './assets/Jersey/Jersey.xml')
         
         //load sprite sheets
-        this.load.spritesheet('player', 'player-sheet.png', {
+        this.load.spritesheet('player', './assets/player-sheet.png', {
             frameWidth: 32,
             frameHeight: 34,
         })
-        this.load.spritesheet('thug', 'thug-sheet.png', {
+        this.load.spritesheet('thug', './assets/thug-sheet.png', {
             frameWidth: 32,
             frameHeight: 32,
         })
-        this.load.spritesheet('hammer', 'hammer-sheet.png', {
+        this.load.spritesheet('hammer', './assets/hammer-sheet.png', {
             frameWidth: 32,
             frameHeight: 32,
         })
-        this.load.spritesheet('healthbar', 'healthbar.png', {
+        this.load.spritesheet('healthbar', './assets/healthbar.png', {
             frameWidth: 160,
             frameHeight: 32,
         })
 
         //load sfx and music
-        this.load.audio('player-punch', 'player-punch.wav')
-        this.load.audio('player-walking', 'player-walking.wav')
-        this.load.audio('player-hurt', 'player-hurt.wav')
+        this.load.audio('player-punch', './assets/player-punch.wav')
+        this.load.audio('player-walking', './assets/player-walking.wav')
+        this.load.audio('player-hurt', './assets/player-hurt.wav')
 
-        this.load.audio('thug-attack', 'thug-attack.wav')
-        this.load.audio('thug-walking', 'thug-walking.wav')
-        this.load.audio('thug-hurt', 'thug-hurt.wav')
+        this.load.audio('thug-attack', './assets/thug-attack.wav')
+        this.load.audio('thug-walking', './assets/thug-walking.wav')
+        this.load.audio('thug-hurt', './assets/thug-hurt.wav')
 
-        this.load.audio('hammer-attack', 'hammer-attack.wav')
-        this.load.audio('hammer-walking', 'hammer-walking.wav')
-        this.load.audio('hammer-hurt', 'hammer-hurt.wav')
-        this.load.audio('hammer-special', 'hammer-special.wav')
+        this.load.audio('hammer-attack', './assets/hammer-attack.wav')
+        this.load.audio('hammer-walking', './assets/hammer-walking.wav')
+        this.load.audio('hammer-hurt', './assets/hammer-hurt.wav')
+        this.load.audio('hammer-special', './assets/hammer-special.wav')
 
-        this.load.audio('gameover', 'gameover.wav')
-        this.load.audio('bgMusic', 'bgMusic.mp3')
-        this.load.audio('victory', 'victory.wav')
+        this.load.audio('gameover', './assets/gameover.wav')
+        this.load.audio('bgMusic', './assets/bgMusic.mp3')
+        this.load.audio('victory', './assets/victory.wav')
     }
 
     create() {
