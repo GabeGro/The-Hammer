@@ -132,25 +132,25 @@ class Load extends Phaser.Scene {
         })
         this.anims.create({
             key: 'thugAttack-right',
-            frameRate: 4,
+            frameRate: 6,
             repeat: -1,
             frames: this.anims.generateFrameNumbers('thug', { start: 9, end: 10 }),
         })
         this.anims.create({
             key: 'thugAttack-left',
-            frameRate: 4,
+            frameRate: 6,
             repeat: -1,
             frames: this.anims.generateFrameNumbers('thug', { start: 11, end: 12 }),
         })
         this.anims.create({
             key: 'hammerAttack-right',
-            frameRate: 4,
+            frameRate: 8,
             repeat: -1,
             frames: this.anims.generateFrameNumbers('hammer', { start: 9, end: 10 }),
         })
         this.anims.create({
             key: 'hammerAttack-left',
-            frameRate: 4,
+            frameRate: 8,
             repeat: -1,
             frames: this.anims.generateFrameNumbers('hammer', { start: 11, end: 12 }),
         })

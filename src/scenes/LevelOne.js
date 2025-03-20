@@ -14,16 +14,26 @@ class LevelOne extends Phaser.Scene {
         this.playerWalking = this.sound.add('player-walking')
         this.playerHurt = this.sound.add('player-hurt')
 
-        this.thugAttack = this.sound.add('thug-attack')
+        this.thugAttack = this.sound.add('thug-attack', {
+            loop: true,
+        })
         this.thugWalking = this.sound.add('thug-walking')
         this.thugHurt = this.sound.add('thug-hurt')
 
-        this.hammerAttack = this.sound.add('hammer-attack')
+        this.hammerAttack = this.sound.add('hammer-attack', {
+            loop: true,
+            rate: 0.5,
+        })
         this.hammerSpecial = this.sound.add('hammer-special')
         this.hammerWalking = this.sound.add('hammer-walking')
         this.hammerHurt = this.sound.add('hammer-hurt')
 
         this.gameOverFX = this.sound.add('gameover')
+        this.BGMusic = this.sound.add('bgMusic', {
+            loop: true,
+            volume: 0.2,
+        })
+        this.BGMusic.play()
 
         //add players & enemies
         this.player1 = new Player(this, 75, 200, 'player', 0, 'right').setOrigin(0.5).setScale(2).setSize(20, 20)
@@ -196,6 +206,7 @@ class LevelOne extends Phaser.Scene {
         this.menuButton = this.add.image(this.cameras.main.scrollX + 200, this.cameras.main.scrollY + 220, 'menu-button').setOrigin(0.5, 0.5).setScale(0.2).setInteractive().on('pointerdown', () => {
             //this.sound.play('select')
             this.scene.start('menuScene')
+            this.BGMusic.stop()
         }).on('pointerover', () => this.menuButton.setTint(0xaaaaaa)).on('pointerout', () => this.menuButton.clearTint())
     }
 
@@ -210,6 +221,7 @@ class LevelOne extends Phaser.Scene {
     }
 
     gameOverScreen() {
+        this.BGMusic.stop()
         this.gameOverFX.play()
         this.physics.pause()
         this.pause = true

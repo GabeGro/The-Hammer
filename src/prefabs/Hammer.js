@@ -64,11 +64,11 @@ class hammerMoveState extends State {
         hammer.setVelocity(direction.x * hammer.hammerVelocity, direction.y * hammer.hammerVelocity)
         hammer.anims.play(`hammerWalk-${hammer.direction}`, true)
 
-        if (Phaser.Math.Distance.Between(hammer.x, hammer.y, player.x, player.y) < 80 && !hammer.specialAttack) {
+        if (Phaser.Math.Distance.Between(hammer.x, hammer.y, player.x, player.y) < 70 && !hammer.specialAttack) {
             this.stateMachine.transition('hammerAttack')
         }
 
-        if (Phaser.Math.Distance.Between(hammer.x, hammer.y, player.x, player.y) < 80 && hammer.specialAttack) {
+        if (Phaser.Math.Distance.Between(hammer.x, hammer.y, player.x, player.y) < 70 && hammer.specialAttack) {
             this.stateMachine.transition('hammerSpecial')
         }
     }
@@ -79,10 +79,12 @@ class hammerAttackState extends State {
         console.log('hammerAttack')
         hammer.setVelocity(0)
         hammer.anims.play(`hammerAttack-${hammer.direction}`)
-        hammer.setSize(40, 20)
+        hammer.setSize(35, 20)
+        scene.thugAttack.play()
 
         scene.time.delayedCall(2000, () => {
             hammer.specialAttack = true
+            scene.thugAttack.stop()
             this.stateMachine.transition('hammerStun')
             return
         })
@@ -98,7 +100,7 @@ class hammerSpecialState extends State {
 
         hammer.on('animationupdate', (anim, frame) => {
             if (anim.key === `hammerSpecial-${hammer.direction}` && frame.index == 2) {
-                hammer.setSize(40,20)
+                hammer.setSize(35,20)
                 scene.hammerSpecial.play()
             }
         })

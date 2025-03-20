@@ -79,7 +79,10 @@ class thugAttackState extends State {
         thug.anims.play(`thugAttack-${thug.direction}`)
         thug.setSize(37, 20)
 
+        scene.thugAttack.play()
+
         scene.time.delayedCall(2000, () => {
+            scene.thugAttack.stop()
             this.stateMachine.transition('thugStun')
             return
         })
@@ -94,6 +97,7 @@ class thugHurtState extends State {
 
         // set recovery timer
         scene.time.delayedCall(1000, () => {
+            //scene.thugHurt.stop()
             if(thug.health > 0) {
                 thug.clearTint()
                 this.stateMachine.transition('thugIdle')
@@ -102,9 +106,12 @@ class thugHurtState extends State {
         })
     }
 
+    //check to see if damage is being taken
     execute(scene, thug) {
         if(thug.playerHit) {
             thug.setTint(0xFF0000)
+            //scene.thugHurt.play()
+
             scene.time.delayedCall(500, () => {
                 if(thug.health > 0) {
                     thug.health -= 10
