@@ -90,7 +90,7 @@ class LevelOne extends Phaser.Scene {
         }, this)
 
         // update instruction text
-        document.getElementById('info').innerHTML = '<strong>CharacterFSM.js:</strong> Arrows: move | SPACE: attack | SHIFT: block | Return: next level | D: debug (toggle)'
+        document.getElementById('info').innerHTML = '<strong>CharacterFSM.js:</strong> Arrows: move | SPACE: attack | SHIFT: block | E: interact | D: debug (toggle)'
     }
 
     update() {
@@ -158,10 +158,10 @@ class LevelOne extends Phaser.Scene {
             }
 
             //temp scene change
-            if (Phaser.Input.Keyboard.JustDown(this.enterKey)) {
+            /*if (Phaser.Input.Keyboard.JustDown(this.enterKey)) {
                 this.BGMusic.stop()
                 this.scene.start('levelTwoScene')
-            }
+            }*/
         }
 
         //pause scene

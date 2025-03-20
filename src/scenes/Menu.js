@@ -15,6 +15,7 @@ class Menu extends Phaser.Scene {
             this.scene.start('levelOneScene')
         }).on('pointerover', () => playButton.setTint(0xaaaaaa)).on('pointerout', () => playButton.clearTint())
 
-        
+        //credits
+        document.getElementById('info').innerHTML = 'Player sprite, Thug sprite, The Hammer Sprite, Background Art & Programming by Gabriel Groenwold, SFX from Chiptune, Music from Pixabay'
     }
 }

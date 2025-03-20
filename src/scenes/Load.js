@@ -6,8 +6,8 @@ class Load extends Phaser.Scene {
     preload() {
         //load images
         //this.load.path = './assets/'
-        this.load.image('levelOneBG', './The-Hammer/refs/heads/main/assets/levelOne-BG.png')
-        this.load.image('levelTwoBG', './The-Hammer/refs/heads/main/assets/leveltwo-BG.png')
+        this.load.image('levelOneBG', './assets/levelOne-bg.png')
+        this.load.image('levelTwoBG', './assets/leveltwo-bg.png')
         this.load.image('chair', './assets/chair.png')
         this.load.image('play-button', './assets/play-button.png')
         this.load.image('resume-button', './assets/resume-button.png')
