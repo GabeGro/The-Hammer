@@ -14,7 +14,7 @@ class Load extends Phaser.Scene {
         this.load.image('menu-button', './assets/menu-button.png')
 
         //load fonts
-        this.load.bitmapFont('jersey', 'Jersey/Jersey.png', './assets/Jersey/Jersey.xml')
+        this.load.bitmapFont('jersey', './assets/Jersey/Jersey.png', './assets/Jersey/Jersey.xml')
         
         //load sprite sheets
         this.load.spritesheet('player', './assets/player-sheet.png', {
