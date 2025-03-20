@@ -103,6 +103,13 @@ class LevelTwo extends Phaser.Scene {
         //add healthbar
         this.healthbar = this.add.sprite(this.cameras.main.scrollX + 10, this.cameras.main.scrollY + 7, 'healthbar', 0).setOrigin(0).setScale(0.9)
 
+        //add tutorial text
+        this.tutorialText1 = this.add.bitmapText(this.cameras.main.scrollX + 200, this.cameras.main.scrollY + 75, 'jersey', 'Press E to pick up chairs', 40).setOrigin(0.5, 0.5)
+
+        this.time.delayedCall(2000, () => {
+            this.tutorialText1.destroy()
+        })
+
         // setup keyboard input
         this.keys = this.input.keyboard.createCursorKeys()
         this.enterKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER)

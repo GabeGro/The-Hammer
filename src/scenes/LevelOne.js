@@ -64,6 +64,19 @@ class LevelOne extends Phaser.Scene {
         //add healthbar
         this.healthbar = this.add.sprite(this.cameras.main.scrollX + 10, this.cameras.main.scrollY + 7, 'healthbar', 0).setOrigin(0).setScale(0.9)
 
+        //add tutorial text
+        this.tutorialText1 = this.add.bitmapText(this.cameras.main.scrollX + 200, this.cameras.main.scrollY + 75, 'jersey', 'Use arrows to move', 40).setOrigin(0.5, 0.5)
+
+        this.time.delayedCall(2000, () => {
+            this.tutorialText1.destroy()
+            this.tutorialText2 = this.add.bitmapText(this.cameras.main.scrollX + 200, this.cameras.main.scrollY + 75, 'jersey', 'Press space to attack', 40).setOrigin(0.5, 0.5)
+            this.tutorialText3 = this.add.bitmapText(this.cameras.main.scrollX + 200, this.cameras.main.scrollY + 110, 'jersey', 'and shift to block', 40).setOrigin(0.5, 0.5)
+            this.time.delayedCall(2000, () => {
+                this.tutorialText2.destroy()
+                this.tutorialText3.destroy()
+            })
+        })
+
         // setup keyboard input
         this.keys = this.input.keyboard.createCursorKeys()
         this.enterKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER)
@@ -135,6 +148,8 @@ class LevelOne extends Phaser.Scene {
                 this.player1 = null
                 this.gameOverScreen()
             }
+
+            //update tutorial
 
             //level progression
             if (this.winCondition <= 0 && this.player1.x > this.background.width - 60) {

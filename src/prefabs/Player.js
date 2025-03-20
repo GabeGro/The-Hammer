@@ -213,7 +213,11 @@ class PlayerHurtState extends State {
         if (player.thugHit) {
             player.health -= 10
         } else if (player.hammerHit) {
-            player.health -= 30
+            if (scene.hammerFSM.state == 'hammerSpecial') {
+                player.health -= 90
+            } else {
+                player.health -= 30
+            }
         }
 
         switch(player.direction) {
