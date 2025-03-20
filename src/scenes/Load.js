@@ -50,6 +50,7 @@ class Load extends Phaser.Scene {
 
         this.load.audio('gameover', 'gameover.wav')
         this.load.audio('bgMusic', 'bgMusic.mp3')
+        this.load.audio('victory', 'victory.wav')
     }
 
     create() {

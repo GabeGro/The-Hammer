@@ -10,7 +10,7 @@ class Hammer extends Phaser.Physics.Arcade.Sprite {
 
         this.direction = direction 
         this.hammerVelocity = 75    // in pixels
-        this.health = 100
+        this.health = 250
         this.specialAttack = false
         this.playerHit = false
 
@@ -39,7 +39,7 @@ class hammerIdleState extends State {
     execute(scene, hammer) {
         const player = scene.player1
 
-        if (Phaser.Math.Distance.Between(hammer.x, hammer.y, player.x, player.y) < 200) {
+        if (Phaser.Math.Distance.Between(hammer.x, hammer.y, player.x, player.y) < 150) {
             this.stateMachine.transition('hammerMove')
             return
         }
@@ -139,7 +139,11 @@ class hammerHurtState extends State {
             }
             scene.time.delayedCall(500, () => {
                 if(hammer.health > 0) {
-                    hammer.health -= 10
+                    if (scene.player1.playerChair) {
+                        hammer.health -= 5
+                    } else {
+                        hammer.health -= 2
+                    }
                     console.log(`health: ${hammer.health}`)
                     hammer.clearTint()
                     hammer.setVelocity(0)

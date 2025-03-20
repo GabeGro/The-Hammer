@@ -41,7 +41,7 @@ class thugIdleState extends State {
     execute(scene, thug) {
         const player = scene.player1
 
-        if (Phaser.Math.Distance.Between(thug.x, thug.y, player.x, player.y) < 200) {
+        if (Phaser.Math.Distance.Between(thug.x, thug.y, player.x, player.y) < 150) {
             this.stateMachine.transition('thugMove')
             return
         }
@@ -114,7 +114,11 @@ class thugHurtState extends State {
 
             scene.time.delayedCall(500, () => {
                 if(thug.health > 0) {
-                    thug.health -= 10
+                    if (scene.player1.playerChair) {
+                        thug.health -= 5
+                    } else {
+                        thug.health -= 2
+                    }
                     console.log(`health: ${thug.health}`)
                     thug.clearTint()
                     thug.setVelocity(0)

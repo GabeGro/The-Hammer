@@ -211,9 +211,9 @@ class PlayerHurtState extends State {
         }
         player.setTint(0xFF0000)
         if (player.thugHit) {
-            player.health -= 50
+            player.health -= 10
         } else if (player.hammerHit) {
-            player.health -= 25
+            player.health -= 30
         }
 
         switch(player.direction) {
@@ -260,7 +260,7 @@ class PlayerChairState extends State {
                 break
         }
 
-        scene.time.delayedCall(200, () => {
+        scene.time.delayedCall(100, () => {
             scene.chairGrab.destroy()
             this.stateMachine.transition('playerIdle')
             return
